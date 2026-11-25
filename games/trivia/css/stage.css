@@ -1,0 +1,342 @@
+/* Trivia stage. Sized in cqw/cqh against the 16:9 .stage box from
+   shared/stage.css. */
+
+:root {
+  --font-display: var(--font);
+  --card-face: #ffffff;
+  --card-ink: #1d1d1f;
+  --card-muted: #6e6e73;
+  --card-back-a: #0071e3;
+  --card-back-b: #0a5cc0;
+  --card-edge: rgba(0, 0, 0, 0.08);
+
+  --suit-history: #1d1d1f;
+  --suit-swift: #f05138;
+  --suit-frameworks: #0071e3;
+  --suit-tools: #1d8a3a;
+  --suit-platforms: #8a3fc0;
+}
+
+[data-theme="dark"] {
+  --card-face: #1c1c22;
+  --card-ink: #ffffff;
+  --card-muted: #9a9aa4;
+  --card-back-a: #2b3f7a;
+  --card-back-b: #1f2e5c;
+  --card-edge: rgba(255, 255, 255, 0.12);
+
+  --suit-history: #e5e5ea;
+  --suit-swift: #ff7a5c;
+  --suit-frameworks: #5b8cff;
+  --suit-tools: #34c759;
+  --suit-platforms: #b388ff;
+}
+
+[data-theme="gameshow"] {
+  --font-display: "Futura", "Avenir Next Condensed", "Arial Rounded MT Bold", Impact, sans-serif;
+  --card-face: #fff7e0;
+  --card-ink: #1a0f3d;
+  --card-muted: #5b4a8a;
+  --card-back-a: #ff2fb0;
+  --card-back-b: #c21d85;
+  --card-edge: rgba(255, 214, 10, 0.8);
+
+  --suit-history: #1a0f3d;
+  --suit-swift: #e0115f;
+  --suit-frameworks: #0e7fa8;
+  --suit-tools: #1d8a3a;
+  --suit-platforms: #7a2fd0;
+}
+
+[data-category="history"] { --suit: var(--suit-history); }
+[data-category="swift"] { --suit: var(--suit-swift); }
+[data-category="frameworks"] { --suit: var(--suit-frameworks); }
+[data-category="tools"] { --suit: var(--suit-tools); }
+[data-category="platforms"] { --suit: var(--suit-platforms); }
+
+/* ---------- Card back pattern (pile and lobby fan) ---------- */
+
+.pile__card {
+  border-radius: 3cqh;
+  background:
+    repeating-linear-gradient(45deg, var(--card-back-a) 0 1.2cqh, var(--card-back-b) 1.2cqh 2.4cqh);
+  box-shadow: inset 0 0 0 1.4cqh var(--card-face), 0 0 0 0.2cqh var(--card-edge), 0 1cqh 3cqh rgba(0, 0, 0, 0.18);
+}
+
+/* ---------- Lobby ---------- */
+
+.lobby {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3cqh;
+  text-align: center;
+}
+
+.lobby__title {
+  margin: 4cqh 0 0;
+  font-family: var(--font-display);
+  font-size: 13cqh;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  animation: rise-in 700ms var(--ease-out) both;
+}
+
+.lobby__line {
+  margin: 0;
+  font-size: 3.6cqh;
+  color: var(--fg-muted);
+  animation: rise-in 700ms var(--ease-out) 120ms both;
+}
+
+.fan {
+  position: relative;
+  width: 60cqw;
+  height: 30cqh;
+}
+
+.fan__card {
+  --spread: calc(var(--i) - (var(--count) - 1) / 2);
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 13cqw;
+  height: 26cqh;
+  margin-left: -6.5cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1cqh;
+  border-radius: 2cqh;
+  background: var(--card-face);
+  color: var(--suit);
+  box-shadow: 0 0 0 0.2cqh var(--card-edge), 0 1cqh 3cqh rgba(0, 0, 0, 0.18);
+  transform-origin: 50% 120%;
+  transform: translateX(calc(var(--spread) * 9cqw)) rotate(calc(var(--spread) * 7deg));
+  animation: fan-out 800ms var(--ease-out) calc(var(--i) * 70ms) both;
+}
+
+.fan__suit {
+  font-size: 10cqh;
+  line-height: 1;
+}
+
+.fan__label {
+  font-size: 1.9cqh;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes fan-out {
+  from { transform: translateY(4cqh); opacity: 0; }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(1.5cqh); }
+}
+
+/* ---------- Table ---------- */
+
+.table {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3cqh;
+}
+
+.table__counter {
+  margin: 0;
+  font-size: 3cqh;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.table__slot {
+  position: relative;
+  width: 70cqw;
+  height: 76cqh;
+  margin-right: 2cqh;
+}
+
+.pile {
+  position: absolute;
+  inset: 0;
+}
+
+.pile__card {
+  position: absolute;
+  inset: 0;
+  transform: translate(calc(var(--depth) * 1cqh), calc(var(--depth) * 1cqh)) rotate(calc(var(--depth) * 0.6deg));
+  z-index: calc(10 - var(--depth));
+}
+
+/* ---------- Card ---------- */
+
+.card {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  perspective: 240cqw;
+}
+
+.card__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 750ms cubic-bezier(0.3, 1.25, 0.4, 1);
+}
+
+.card--revealed .card__inner {
+  transform: rotateY(180deg);
+}
+
+.card__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3cqh;
+  padding: 8cqh 9cqw;
+  border-radius: 3cqh;
+  background: var(--card-face);
+  color: var(--card-ink);
+  text-align: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 0 0 0.2cqh var(--card-edge), 0 2cqh 6cqh rgba(0, 0, 0, 0.22);
+}
+
+/* The inset frame line of a printed playing card. */
+.card__face::before {
+  content: '';
+  position: absolute;
+  inset: 2.2cqh;
+  border-radius: 1.8cqh;
+  border: 0.3cqh solid color-mix(in srgb, var(--suit) 30%, transparent);
+  pointer-events: none;
+}
+
+.card__face--back {
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 40%, color-mix(in srgb, var(--suit) 10%, transparent), transparent 75%),
+    var(--card-face);
+}
+
+.card__corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  color: var(--suit);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.card__corner--top {
+  top: 3.6cqh;
+  left: 2.6cqw;
+}
+
+.card__corner--bottom {
+  bottom: 3.6cqh;
+  right: 2.6cqw;
+  transform: rotate(180deg);
+}
+
+.card__corner-number {
+  font-size: 4.4cqh;
+  font-variant-numeric: tabular-nums;
+}
+
+.card__corner-suit {
+  font-size: 3.8cqh;
+}
+
+.card__eyebrow {
+  margin: 0;
+  font-size: 2.6cqh;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--suit);
+}
+
+.card__question,
+.card__answer {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+.card__question.is-short { font-size: 7cqh; }
+.card__question.is-medium { font-size: 6cqh; }
+.card__question.is-long { font-size: 5cqh; }
+
+.card__answer.is-short { font-size: 10cqh; }
+.card__answer.is-medium { font-size: 7.4cqh; }
+.card__answer.is-long { font-size: 5.6cqh; }
+
+.card__footer {
+  position: absolute;
+  bottom: 4.4cqh;
+  margin: 0;
+  font-size: 2.2cqh;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--card-muted);
+}
+
+.card__detail {
+  margin: 0;
+  max-width: 44cqw;
+  font-size: 3.2cqh;
+  line-height: 1.35;
+  color: var(--card-muted);
+  text-wrap: pretty;
+}
+
+[data-theme="gameshow"] .lobby__title {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Dealing ---------- */
+
+.card--in-forward { animation: deal-from-pile 600ms var(--ease-out) both; }
+.card--in-back { animation: slide-from-left 600ms var(--ease-out) both; }
+.card--out-forward { animation: toss-left 600ms cubic-bezier(0.5, 0, 0.75, 0) forwards; pointer-events: none; }
+.card--out-back { animation: return-to-pile 500ms ease-in forwards; pointer-events: none; }
+
+@keyframes deal-from-pile {
+  from { transform: translate(1.5cqh, 1.5cqh) scale(0.97); }
+}
+
+@keyframes slide-from-left {
+  from { transform: translateX(-110cqw) rotate(-10deg); }
+}
+
+@keyframes toss-left {
+  to { transform: translateX(-110cqw) rotate(-10deg); }
+}
+
+@keyframes return-to-pile {
+  to { transform: translate(1.5cqh, 1.5cqh) scale(0.97); opacity: 0; }
+}

@@ -1,0 +1,82 @@
+/* The fixed 16:9 projector stage every game draws into. Everything inside
+   .stage sizes itself in container query units (cqw/cqh) against the stage
+   box, never vw/vh/rem, so the same markup looks identical whether it fills a
+   projector window or sits embedded at admin size. */
+
+/* Page-level chrome for the full projector page. Scoped to .game-view (set
+   on game.html's <body>) so admin pages, which also link this stylesheet for
+   their stage preview, keep a normal scrolling page. */
+body.game-view {
+  height: 100vh;
+  overflow: hidden;
+}
+
+#game-root {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ---------- Stage frame ---------- */
+
+.stage-host {
+  container-type: size;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.stage {
+  container-type: size;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: min(100cqw, 177.778cqh);
+  height: min(100cqh, 56.25cqw);
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+}
+
+/* ---------- Fullscreen button (page chrome, outside the stage) ---------- */
+
+.fullscreen-button {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 150ms ease, box-shadow 150ms ease;
+}
+
+.fullscreen-button:hover {
+  color: var(--fg);
+  box-shadow: var(--shadow);
+}
+
+.fullscreen-button svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* ---------- Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

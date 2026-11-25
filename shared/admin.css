@@ -1,0 +1,150 @@
+/* Host-page chrome shared by every game's admin view. */
+
+body {
+  font-size: 16px;
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  margin: 0.3rem 0 1.75rem;
+  color: var(--fg-muted);
+}
+
+fieldset {
+  border: none;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem 1.25rem;
+  margin: 0 0 1.25rem;
+}
+
+legend {
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0 0.35rem;
+}
+
+.radio,
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: 1.5rem;
+  cursor: pointer;
+}
+
+.player-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.player-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.player-name {
+  flex: 1;
+}
+
+input[type='text'],
+input[type='number'] {
+  background: var(--bg);
+  border: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent);
+  border-radius: 0.55rem;
+  color: var(--fg);
+  padding: 0.55rem 0.7rem;
+  font-size: 1rem;
+  font-family: var(--font);
+}
+
+input[type='text']:focus,
+input[type='number']:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+input[type='number'] {
+  width: 5.5rem;
+}
+
+button {
+  background: var(--bg-raised);
+  border: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 12%, transparent);
+  border-radius: 0.6rem;
+  color: var(--fg);
+  padding: 0.55rem 1rem;
+  font-size: 0.95rem;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: box-shadow 150ms ease, transform 150ms var(--ease-out);
+}
+
+button:hover:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.start-button {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.8rem 1.75rem;
+}
+
+.start-button:hover:not(:disabled) {
+  box-shadow: var(--shadow);
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+.hello-status.connected {
+  color: var(--correct);
+}
+
+/* The stage preview: full admin width up to ~1100px, always 16:9, rounded
+   and shadowed as a distinct "this is what the projector shows" frame. */
+.stage-preview {
+  width: min(100%, 1100px);
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}

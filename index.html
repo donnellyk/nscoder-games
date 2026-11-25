@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Meetup Games</title>
+  <link rel="stylesheet" href="shared/projector.css" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-5) var(--space-3);
+      gap: var(--space-4);
+    }
+
+    h1 {
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0;
+      text-align: center;
+      color: var(--fg);
+    }
+
+    .games {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      width: 100%;
+      max-width: 56rem;
+    }
+
+    .game-card {
+      background: var(--bg-raised);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .game-card h2 {
+      font-size: var(--text-l);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    .game-card p {
+      font-size: var(--text-s);
+      color: var(--fg-muted);
+      margin: 0;
+    }
+
+    .game-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+    }
+
+    .game-links a {
+      font-size: var(--text-m);
+      font-weight: 600;
+      text-decoration: none;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius);
+      text-align: center;
+      transition: box-shadow 150ms ease, transform 150ms var(--ease-out);
+    }
+
+    .game-links a.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .game-links a.primary:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .game-links a.secondary {
+      background: var(--bg);
+      color: var(--fg);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 16%, transparent);
+    }
+
+    .game-links a.secondary:hover {
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .empty {
+      color: var(--fg-muted);
+      font-size: var(--text-m);
+    }
+  </style>
+</head>
+<body>
+  <h1>Meetup Games</h1>
+  <div id="games" class="games"></div>
+
+  <script type="module">
+    import { games } from './games/registry.js'
+
+    const renderGame = (game) => `
+      <article class="game-card">
+        <h2>${game.name}</h2>
+        <p>${game.description}</p>
+        <div class="game-links">
+          <a class="primary" href="${game.adminPath}">Host</a>
+          <a class="secondary" href="${game.gamePath}">Game View</a>
+        </div>
+      </article>
+    `
+
+    const container = document.getElementById('games')
+    container.innerHTML = games.length
+      ? games.map(renderGame).join('')
+      : '<p class="empty">No games yet.</p>'
+  </script>
+</body>
+</html>

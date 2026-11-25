@@ -1,0 +1,306 @@
+.match-count {
+  color: var(--fg-muted);
+  margin: 0 0 0.5rem;
+}
+
+.session-warning {
+  color: var(--wrong);
+  font-size: 0.9rem;
+  margin: 0 0 1.25rem;
+}
+
+.session-warning[hidden] {
+  display: none;
+}
+
+/* ---------- Session panel ---------- */
+
+.session-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.25rem;
+  margin: 0 0 1.25rem;
+}
+
+.session-panel--active {
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow-sm);
+}
+
+.session-panel__hint,
+.session-panel__status {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+.session-panel--active .session-panel__status {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.session-panel__button--end.confirming {
+  box-shadow: inset 0 0 0 1px var(--wrong);
+  color: var(--wrong);
+}
+
+/* ---------- Items master list ---------- */
+
+.item-list {
+  margin: 0 0 1.25rem;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  padding: 0.25rem 1.25rem;
+}
+
+.item-list__summary {
+  cursor: pointer;
+  padding: 0.75rem 0;
+  font-weight: 600;
+  color: var(--fg-muted);
+  list-style: none;
+}
+
+.item-list__summary::-webkit-details-marker { display: none; }
+
+.item-list__summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--fg-muted);
+  transition: transform 150ms ease;
+}
+
+.item-list[open] .item-list__summary::before {
+  transform: rotate(90deg);
+}
+
+.item-list__body {
+  padding: 0 0 1rem;
+}
+
+.item-list__controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.item-list__filter {
+  flex: 1;
+  max-width: 20rem;
+}
+
+.item-list__scroll {
+  max-height: 22rem;
+  overflow-y: auto;
+  border-radius: 0.6rem;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 10%, transparent);
+}
+
+.item-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.item-table td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.item-row--excluded {
+  opacity: 0.45;
+}
+
+.item-row--excluded .item-row__name {
+  text-decoration: line-through;
+}
+
+/* Used-this-session is a distinct, milder look from removed: muted but no
+   strikethrough, since the item itself is still in play for future
+   sessions — just already shown in this one. */
+.item-row--used:not(.item-row--excluded) {
+  opacity: 0.65;
+}
+
+.item-row__badge {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+  color: var(--fg-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.item-row__date,
+.item-row__tier,
+.item-row__category {
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+/* ---------- Play screen ---------- */
+
+
+.show-dates-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+
+.host-date {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
+  box-shadow: var(--shadow-sm);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* [hidden] is an author-level override here (not just the UA default),
+   because .host-date and .result-panel below both set their own `display`
+   unconditionally, which otherwise beats the UA stylesheet's [hidden] rule
+   and leaves an empty box on screen. */
+.host-date[hidden],
+.result-panel[hidden] {
+  display: none;
+}
+
+
+.score-panel {
+  margin-top: 1.5rem;
+}
+
+.mass-stats {
+  color: var(--fg-muted);
+  margin: 0 0 1rem;
+}
+
+.result-panel {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  padding: 1rem 1.5rem;
+  min-width: 16rem;
+  margin-bottom: 1.25rem;
+}
+
+.result-panel.correct { box-shadow: 0 0 0 2px var(--correct), var(--shadow-sm); }
+.result-panel.wrong { box-shadow: 0 0 0 2px var(--wrong), var(--shadow-sm); }
+
+.result-outcome {
+  margin: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.result-panel.correct .result-outcome { color: var(--correct); }
+.result-panel.wrong .result-outcome { color: var(--wrong); }
+
+.result-name {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.result-date,
+.result-fact {
+  margin: 0;
+  color: var(--fg-muted);
+}
+
+.score-table {
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.score-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.score-table tr.current-turn td {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.score-buttons button {
+  padding: 0.15rem 0.6rem;
+  margin-right: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.confirm-button {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.confirm-button:hover:not(:disabled) {
+  box-shadow: var(--shadow);
+}
+
+.end-game-button.confirming {
+  box-shadow: inset 0 0 0 1px var(--wrong);
+  color: var(--wrong);
+}
+
+/* ---------- Finished screen ---------- */
+
+.finished-screen h1 {
+  margin-bottom: 1rem;
+}
+
+.standings {
+  border-collapse: collapse;
+  margin: 1rem 0 1.5rem;
+}
+
+.standings td {
+  padding: 0.5rem 1.25rem 0.5rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.standings .rank {
+  color: var(--fg-muted);
+}
+
+.mass-result {
+  font-size: 1.3rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.session-summary {
+  color: var(--fg-muted);
+  margin: 0 0 1.5rem;
+}

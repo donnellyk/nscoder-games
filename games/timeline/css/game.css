@@ -1,0 +1,707 @@
+/* Timeline stage. Everything below .stage-host/.stage is sized in container
+   query units (cqw/cqh) against the fixed 16:9 .stage box, never vw/vh/rem,
+   so the same markup looks identical whether it fills a projector window or
+   sits embedded at admin size — a position expressed as a fraction of the
+   stage means the same thing in both places. */
+
+:root {
+  --font-mono: ui-monospace, "SF Mono", "Menlo", "Cascadia Mono", monospace;
+  --font-display: var(--font);
+
+  --cat-hardware: #3a5cdb;
+  --cat-software: #8a3fc0;
+  --cat-accessory: #c2680f;
+
+  /* Many item photos have white/transparent backgrounds, so the verdict
+     media tile stays a fixed light tile in every theme (see .verdict__media
+     below) rather than following --bg-raised. */
+  --tile-bg: #f5f5f7;
+
+  --confetti-1: #0071e3;
+  --confetti-2: #1d8a3a;
+  --confetti-3: #ff9f0a;
+  --confetti-4: #d70015;
+  --confetti-5: #8a3fc0;
+}
+
+[data-theme="dark"] {
+  --cat-hardware: #5b8cff;
+  --cat-software: #b388ff;
+  --cat-accessory: #ffb454;
+
+  --confetti-1: #5b8cff;
+  --confetti-2: #34c759;
+  --confetti-3: #ffd60a;
+  --confetti-4: #ff5a5f;
+  --confetti-5: #b388ff;
+}
+
+[data-theme="gameshow"] {
+  --cat-hardware: #22d3ee;
+  --cat-software: #ff2fb0;
+  --cat-accessory: #ffd60a;
+  --font-display: "Futura", "Avenir Next Condensed", "Arial Rounded MT Bold", Impact, sans-serif;
+
+  --confetti-1: #ffd60a;
+  --confetti-2: #ff2fb0;
+  --confetti-3: #22d3ee;
+  --confetti-4: #ff9f0a;
+  --confetti-5: #34c759;
+}
+
+.stage-effects-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* ---------- Waiting / setup preview ---------- */
+
+.waiting {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 4cqh 6cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4cqh;
+  text-align: center;
+}
+
+.waiting__title {
+  margin: 0;
+  font-size: 13cqh;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+  animation: waiting-in 700ms var(--ease-out) both;
+}
+
+.waiting__subtitle {
+  margin: 0;
+  font-size: 3.4cqh;
+  color: var(--fg-muted);
+  animation: waiting-in 700ms var(--ease-out) 100ms both;
+}
+
+@keyframes waiting-in {
+  from { opacity: 0; transform: translateY(1cqh); }
+  to { opacity: 1; transform: none; }
+}
+
+.setup-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.6cqh;
+  animation: waiting-in 700ms var(--ease-out) 100ms both;
+}
+
+.setup-preview__tiles {
+  display: flex;
+  gap: 1.6cqw;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.setup-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8cqh;
+  padding: 3.5cqh 2.6cqw;
+  min-width: 19cqw;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  color: var(--fg-muted);
+  transition: box-shadow 200ms ease, color 200ms ease, transform 200ms var(--ease-out);
+}
+
+.setup-tile--selected {
+  color: var(--fg);
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow);
+  transform: translateY(-0.3cqh);
+}
+
+.setup-tile__icons {
+  display: flex;
+  gap: 0.5cqw;
+}
+
+.setup-tile__icon {
+  width: 6cqh;
+  height: 6cqh;
+  color: var(--fg-muted);
+}
+
+.setup-tile--selected .setup-tile__icon { color: var(--accent); }
+.setup-tile__icon svg { width: 100%; height: 100%; }
+
+.setup-tile__label {
+  margin: 0;
+  font-size: 3.6cqh;
+  font-weight: 600;
+}
+
+.setup-preview__meta {
+  margin: 0;
+  font-size: 3.4cqh;
+  color: var(--fg-muted);
+}
+
+.setup-preview__session {
+  margin: 0;
+  font-size: 2.4cqh;
+  color: var(--fg-muted);
+  opacity: 0.8;
+}
+
+/* ---------- Shared: category accents ---------- */
+
+.current-card__icon--hardware, .placed-card__icon--hardware, .verdict__media-icon--hardware { color: var(--cat-hardware); }
+.current-card__icon--software, .placed-card__icon--software, .verdict__media-icon--software { color: var(--cat-software); }
+.current-card__icon--accessory, .placed-card__icon--accessory, .verdict__media-icon--accessory { color: var(--cat-accessory); }
+
+/* ---------- Playing ---------- */
+
+.playing {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.6cqh 3cqw;
+  gap: 1.6cqh;
+}
+
+.playing__bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+
+.playing__remaining {
+  margin: 0;
+  font-size: 2.4cqh;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A fixed fraction of the stage, not flex:1 — container query units on the
+   cards below resolve against .stage directly (the nearest container),
+   skipping this wrapper entirely, so its box must match their size on
+   purpose rather than by leftover flex space, or they overflow it. */
+.playing__timeline {
+  flex: 0 0 auto;
+  height: 54cqh;
+  display: flex;
+  align-items: center;
+}
+
+.playing__current {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.pending-prompt {
+  margin: 0;
+  font-size: 3.2cqh;
+  font-weight: 600;
+  color: var(--fg-muted);
+  text-align: center;
+}
+
+/* ---------- Current card ---------- */
+
+.current-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.9cqh;
+  background: var(--bg-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 2.4cqh 5cqw;
+  min-width: 32cqw;
+  transition: transform 90ms var(--ease-out), box-shadow 200ms ease;
+}
+
+.stage-card--lifted {
+  box-shadow: var(--shadow-lg);
+}
+
+.current-card__icon {
+  width: 5cqh;
+  height: 5cqh;
+}
+
+.current-card__icon svg { width: 100%; height: 100%; }
+
+.current-card__category {
+  margin: 0;
+  font-size: 1.9cqh;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.current-card__name {
+  margin: 0;
+  font-size: 5.8cqh;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  max-width: 70cqw;
+}
+
+.current-card__turn {
+  margin: 0.3cqh 0 0;
+  font-size: 2.6cqh;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* ---------- Scoreboard ---------- */
+
+.scoreboard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1cqw;
+}
+
+.scoreboard__player {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7cqw;
+  padding: 0.7cqh 1.4cqw;
+  border-radius: 999px;
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 200ms ease, transform 200ms var(--ease-out);
+}
+
+.scoreboard__player--active {
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow-sm);
+  transform: translateY(-0.15cqh);
+}
+
+.scoreboard__name {
+  font-size: 2.1cqh;
+  font-weight: 600;
+}
+
+.scoreboard__score {
+  font-family: var(--font-mono);
+  font-size: 2.1cqh;
+  color: var(--fg-muted);
+}
+
+.scoreboard__player--active .scoreboard__score { color: var(--fg); }
+
+.scoreboard__count {
+  font-size: 2.3cqh;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Timeline strip ---------- */
+
+.timeline-strip {
+  --gap-w: 0.55cqw;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 100%;
+}
+
+.timeline-strip__gap {
+  flex: 0 0 var(--gap-w);
+  align-self: stretch;
+  border-radius: 999px;
+  transition: flex-basis 180ms var(--ease-out), background 180ms ease;
+}
+
+.timeline-strip__gap--hover {
+  flex-basis: calc(var(--gap-w) * 5);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent) inset;
+}
+
+[data-theme="dark"] .timeline-strip__gap--hover {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent) inset,
+    0 0 2.5cqh color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.placed-card {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6cqh;
+  padding: 1.6cqh 1cqw;
+  min-height: 50cqh;
+  max-height: 54cqh;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.placed-card__icon {
+  width: 7cqh;
+  height: 7cqh;
+}
+
+.placed-card__icon svg { width: 100%; height: 100%; }
+
+.placed-card__name {
+  font-size: 3.4cqh;
+  font-weight: 600;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.placed-card__year {
+  font-family: var(--font-mono);
+  font-size: 2.6cqh;
+  color: var(--fg-muted);
+  min-height: 1em;
+}
+
+/* Above the compact threshold, cards run name vertically to stay legible at
+   a fraction of the width, with the year pinned flat along the bottom. */
+.timeline-strip--compact { --gap-w: 0.35cqw; }
+
+.timeline-strip--compact .placed-card {
+  height: 52cqh;
+  min-height: 0;
+  max-height: none;
+  padding: 1.2cqh 0.3cqw;
+  gap: 0.5cqh;
+}
+
+.timeline-strip--compact .placed-card__icon {
+  width: 3.2cqh;
+  height: 3.2cqh;
+}
+
+/* -webkit-box line clamping drops vertical text entirely, so the compact
+   name is a plain block that truncates with an ellipsis instead. */
+.timeline-strip--compact .placed-card__name {
+  display: block;
+  flex: 1 1 0;
+  min-height: 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  font-size: 2.3cqh;
+}
+
+.timeline-strip--compact .placed-card__year {
+  font-size: 1.85cqh;
+}
+
+.placed-card--settling { transition: transform 700ms var(--ease-out); }
+
+.placed-card--pending {
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-raised));
+  color: var(--fg-muted);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.placed-card--correct,
+.placed-card--wrong {
+  animation: card-flash 550ms ease;
+}
+
+.placed-card--correct {
+  background: color-mix(in srgb, var(--correct) 12%, var(--bg-raised));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--correct) 45%, transparent);
+}
+
+.placed-card--wrong {
+  background: color-mix(in srgb, var(--wrong) 12%, var(--bg-raised));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wrong) 45%, transparent);
+}
+
+@keyframes card-flash {
+  0% { transform: scaleY(0.4); opacity: 0.4; }
+  60% { transform: scaleY(1.05); opacity: 1; }
+  100% { transform: scaleY(1); }
+}
+
+/* A dropped-but-not-confirmed card: it lives inside the gap it was placed
+   in, widened to card size, with a dashed outline and no year (nobody knows
+   yet whether the guess is right) instead of a shadow. */
+.timeline-strip__gap--pending {
+  align-self: flex-end;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.timeline-strip--compact .timeline-strip__gap--pending { align-self: stretch; }
+
+/* While the host re-drags it, it floats free (see .stage-card--lifted in
+   stage.js) and the gap it came from collapses back to a plain thin gap. */
+.timeline-strip__gap--pending.timeline-strip__gap--lifted {
+  align-self: stretch;
+  flex: 0 0 var(--gap-w);
+}
+
+.placed-card--provisional {
+  width: 100%;
+  box-shadow: none;
+  outline: 0.3cqh dashed var(--accent);
+  outline-offset: -0.3cqh;
+  cursor: grab;
+  touch-action: none;
+}
+
+.placed-card--provisional .placed-card__year {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ---------- Result ---------- */
+
+.result {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.6cqh 3cqw;
+  gap: 1.6cqh;
+}
+
+.result__bar {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Same fixed-fraction reasoning as .playing__timeline: this must match the
+   cards' own cqh sizing, not flex to whatever is left over. */
+.result__timeline {
+  flex: 0 0 auto;
+  height: 54cqh;
+  display: flex;
+  align-items: center;
+}
+
+.result__current {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: 2.6cqw;
+  text-align: left;
+  border-radius: var(--radius-lg);
+  padding: 2.2cqh 4cqw;
+  min-width: 46cqw;
+  background: var(--bg-raised);
+  box-shadow: var(--shadow);
+  transition: opacity 400ms ease, transform 400ms ease, background 300ms ease, box-shadow 300ms ease;
+}
+
+.verdict--pending {
+  opacity: 0;
+  transform: translateY(1.4cqh) scale(0.98);
+}
+
+.verdict--correct:not(.verdict--pending) {
+  background: color-mix(in srgb, var(--correct) 8%, var(--bg-raised));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--correct) 35%, transparent), var(--shadow);
+}
+
+.verdict--wrong:not(.verdict--pending) {
+  background: color-mix(in srgb, var(--wrong) 8%, var(--bg-raised));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--wrong) 35%, transparent), var(--shadow);
+}
+
+.verdict__media {
+  flex: 0 0 auto;
+  width: 22cqh;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4cqh;
+  border-radius: var(--radius);
+  background: var(--tile-bg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.verdict__media--empty { background: var(--tile-bg); }
+
+.verdict__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.verdict__media-icon {
+  width: 60%;
+  height: 60%;
+  /* Always sits on the fixed light --tile-bg (never the theme background),
+     so it needs its own always-legible muted tone rather than --fg-muted,
+     which is a light colour in the dark/game-show themes. */
+  color: #6e6e73;
+}
+
+.verdict__media-icon svg { width: 100%; height: 100%; }
+
+.verdict__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5cqh;
+  min-width: 0;
+}
+
+.verdict__badge {
+  margin: 0;
+  font-size: 3.4cqh;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.verdict--correct .verdict__badge { color: var(--correct); }
+.verdict--wrong .verdict__badge { color: var(--wrong); }
+
+.verdict__name {
+  margin: 0;
+  font-size: 5.2cqh;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  max-width: 48cqw;
+}
+
+.verdict__date {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 3cqh;
+  color: var(--fg);
+}
+
+.verdict__fact {
+  margin: 0.2cqh 0 0;
+  font-size: 2.3cqh;
+  color: var(--fg-muted);
+  max-width: 48cqw;
+}
+
+/* ---------- Finished ---------- */
+
+.finished {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3cqh 4cqw;
+  gap: 3cqh;
+  text-align: center;
+}
+
+.finished__result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4cqh;
+  animation: waiting-in 600ms var(--ease-out) both;
+}
+
+.finished__winner {
+  margin: 0;
+  font-size: 6.6cqh;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.finished__stat {
+  margin: 0;
+  font-size: 3.4cqh;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.standings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1cqh;
+  width: 56cqw;
+}
+
+.standings__row {
+  display: grid;
+  grid-template-columns: 3.5cqw 1fr auto;
+  align-items: baseline;
+  gap: 1.5cqw;
+  padding: 1.2cqh 1.6cqw;
+  border-radius: var(--radius);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-sm);
+  font-size: 2.6cqh;
+}
+
+.standings__rank {
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  text-align: right;
+}
+
+.standings__name {
+  text-align: left;
+  font-weight: 600;
+}
+
+.standings__score {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.finished__timeline {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 54cqh;
+  display: flex;
+  align-items: center;
+}

@@ -1,0 +1,91 @@
+:root {
+  color-scheme: light;
+
+  --bg: #f5f5f7;
+  --bg-raised: #ffffff;
+  --fg: #1d1d1f;
+  --fg-muted: #6e6e73;
+  --accent: #0071e3;
+  --correct: #1d8a3a;
+  --wrong: #d70015;
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+
+  --text-s: clamp(0.9rem, 0.8rem + 0.4vw, 1.2rem);
+  --text-m: clamp(1.2rem, 1rem + 1vw, 1.8rem);
+  --text-l: clamp(1.8rem, 1.4rem + 2vw, 3rem);
+  --text-xl: clamp(2.6rem, 1.8rem + 4vw, 5.5rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 2rem;
+  --space-5: 4rem;
+
+  --radius: 1.1rem;
+  --radius-lg: 1.5rem;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 16px 40px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.08), 0 32px 72px rgba(0, 0, 0, 0.12);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The app's earlier dark look: near-black with a faint blue vignette, raised
+   surfaces distinguished by a hairline border instead of a shadow. Setting
+   --shadow* to a 1px color-mix ring (no blur) is what turns every existing
+   `box-shadow: var(--shadow*)` rule into a border without touching that
+   component CSS. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: radial-gradient(ellipse 80% 55% at 50% 15%, rgba(70, 110, 255, 0.12), transparent 65%), #0a0a0c;
+  --bg-raised: #16161b;
+  --fg: #ffffff;
+  --fg-muted: #9a9aa4;
+  --accent: #5b8cff;
+  --correct: #34c759;
+  --wrong: #ff5a5f;
+
+  --shadow-sm: 0 0 0 1px color-mix(in srgb, white 10%, transparent);
+  --shadow: 0 0 0 1px color-mix(in srgb, white 10%, transparent);
+  --shadow-lg: 0 0 0 1px color-mix(in srgb, white 14%, transparent);
+}
+
+/* A TV game-show set: deep indigo/purple backdrop with spotlight gradients,
+   gold accent, magenta/cyan secondaries. --shadow* becomes a thick gold ring
+   instead of a soft shadow for the same reason as the dark theme above. */
+[data-theme="gameshow"] {
+  color-scheme: dark;
+
+  --bg:
+    radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255, 214, 10, 0.16), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 10% 100%, rgba(255, 47, 176, 0.14), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 90% 100%, rgba(34, 211, 238, 0.14), transparent 60%),
+    #1a0f3d;
+  --bg-raised: #2a1a5e;
+  --fg: #fff7e0;
+  --fg-muted: #c9b8ff;
+  --accent: #ffd60a;
+  --correct: #34c759;
+  --wrong: #ff3b6b;
+
+  --shadow-sm: 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent), 0 2px 10px rgba(0, 0, 0, 0.4);
+  --shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 65%, transparent), 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 0 0 4px color-mix(in srgb, var(--accent) 70%, transparent), 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: var(--text-m);
+}

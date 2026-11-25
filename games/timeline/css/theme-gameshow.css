@@ -1,0 +1,87 @@
+/* Game-show theme component rules. Token overrides (colours, --cat-*,
+   --confetti-*, --font-display) live in shared/projector.css and the
+   :root/[data-theme] blocks at the top of game.css; everything in this file
+   is gameshow-only decoration layered on top of that palette: chunky
+   uppercase display type, a marquee bulb edge and glossy sheen on the two
+   hero panels, a stamped verdict, and a bigger glowing hover gap. */
+
+[data-theme="gameshow"] .waiting__title,
+[data-theme="gameshow"] .current-card__name,
+[data-theme="gameshow"] .verdict__name,
+[data-theme="gameshow"] .finished__winner {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+[data-theme="gameshow"] .current-card__category,
+[data-theme="gameshow"] .setup-tile__label {
+  font-family: var(--font-display);
+  letter-spacing: 0.2em;
+}
+
+/* ---------- Stamped verdict ---------- */
+
+[data-theme="gameshow"] .verdict__badge {
+  font-family: var(--font-display);
+  font-size: 4.4cqh;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-block;
+  transform: rotate(-3deg);
+  -webkit-text-stroke: 0.05cqh color-mix(in srgb, black 45%, transparent);
+}
+
+[data-theme="gameshow"] .verdict__badge::after {
+  content: '!';
+}
+
+/* ---------- Glossy panels + marquee bulb edge ---------- */
+/* The bulb ring is a hollow frame: a transparent padding-box fill lets the
+   panel's real background show through the middle, while a dotted
+   radial-gradient painted into the border-box area shows only in the thin
+   border strip — the classic CSS "picture frame" background trick. */
+
+[data-theme="gameshow"] .verdict,
+[data-theme="gameshow"] .current-card {
+  position: relative;
+}
+
+[data-theme="gameshow"] .verdict::after,
+[data-theme="gameshow"] .current-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(165deg, color-mix(in srgb, white 14%, transparent), transparent 55%);
+  pointer-events: none;
+}
+
+[data-theme="gameshow"] .verdict::before,
+[data-theme="gameshow"] .current-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 0.9cqh solid transparent;
+  background:
+    transparent padding-box,
+    radial-gradient(circle, #fff3c4 42%, transparent 46%) border-box;
+  background-size: auto, 2.4cqh 2.4cqh;
+  animation: bulb-chase 1.2s steps(6) infinite;
+  pointer-events: none;
+}
+
+@keyframes bulb-chase {
+  to { background-position: 0 0, 2.4cqh 0; }
+}
+
+/* ---------- Big glowing hover gap ---------- */
+
+[data-theme="gameshow"] .timeline-strip__gap--hover {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 70%, transparent) inset,
+    0 0 4cqh color-mix(in srgb, var(--accent) 85%, transparent);
+}

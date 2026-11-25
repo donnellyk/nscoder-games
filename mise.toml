@@ -1,0 +1,7 @@
+[tasks.start]
+description = "Serve the games at http://localhost:8000 and open the Timeline host and game windows"
+run = "scripts/serve.sh timeline"
+
+[tasks.trivia]
+description = "Serve the games at http://localhost:8000 and open the Trivia host and game windows"
+run = "scripts/serve.sh trivia"
